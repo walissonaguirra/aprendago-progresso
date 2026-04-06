@@ -6,7 +6,7 @@ module.exports = {
       colors: {
         go: {
           blue: '#00ADD8',
-          primary: '#007D9C',
+          primary: '#00667F',
           slate: '#253443',
           yellow: '#FDDD00',
           light: '#BFEAF4',

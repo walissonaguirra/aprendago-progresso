@@ -6,3 +6,8 @@
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #6c757d; }
+
+*:focus-visible {
+  outline: 2px solid #00667F;
+  outline-offset: 2px;
+}

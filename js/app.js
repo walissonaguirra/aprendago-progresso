@@ -20,9 +20,9 @@ const DOM = {
 
 // Ícones SVG
 const ICONS = {
-  lock: '<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>',
-  check: '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>',
-  play: '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+  lock: '<svg aria-hidden="true" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>',
+  check: '<svg aria-hidden="true" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+  play: '<svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
 };
 
 // Helpers de dados
@@ -84,6 +84,8 @@ function renderSidebar(stats) {
 function updateSidebarProgress(stats) {
   DOM.sidebarProgress.textContent = `${stats.done}/${stats.total} (${stats.pct}%)`;
   DOM.sidebarBar.style.width = stats.pct + "%";
+  const progressbar = document.getElementById("sidebar-progressbar");
+  if (progressbar) progressbar.setAttribute("aria-valuenow", stats.pct);
 }
 
 function updateSidebarNav() {
@@ -114,14 +116,22 @@ function renderSidebarChapter(ch) {
   const badgeClass = isComplete ? "bg-green-600 text-white" : "bg-gray-100 text-gray-500";
   const badgeContent = !ch.unlocked ? ICONS.lock : ch.number;
 
+  const ariaAttrs = [
+    'role="button"',
+    `tabindex="${ch.unlocked ? 0 : -1}"`,
+    isActive ? 'aria-current="true"' : "",
+    !ch.unlocked ? 'aria-disabled="true"' : "",
+    `aria-label="Cap. ${ch.number} - ${ch.title}, ${ch.pct}% completo${!ch.unlocked ? ', bloqueado' : ''}"`,
+  ].filter(Boolean).join(" ");
+
   return `
     <div class="flex items-center gap-2.5 px-3 py-2 rounded-sm cursor-pointer text-[13px] transition-all duration-200 ${itemClass}"
-         data-chapter="${ch.number}">
-      <span class="w-6 h-6 rounded-sm flex items-center justify-center text-xs font-bold shrink-0 ${badgeClass}">
+         data-chapter="${ch.number}" title="Cap. ${ch.number} - ${ch.title}" ${ariaAttrs}>
+      <span class="w-6 h-6 rounded-sm flex items-center justify-center text-xs font-bold shrink-0 ${badgeClass}" aria-hidden="true">
         ${badgeContent}
       </span>
-      <span class="truncate">${ch.title}</span>
-      <span class="w-8 text-xs text-right ml-auto shrink-0 text-gray-500">${ch.pct}%</span>
+      <span class="truncate" aria-hidden="true">${ch.title}</span>
+      <span class="w-8 text-xs text-right ml-auto shrink-0 text-gray-500" aria-hidden="true">${ch.pct}%</span>
     </div>`;
 }
 
@@ -136,11 +146,11 @@ function renderChapter(chapter) {
 function renderLockedChapter(chapter) {
   return `
     <div class="flex flex-col items-center justify-center py-16 text-center">
-      <svg class="w-16 h-16 text-gray-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg aria-hidden="true" class="w-16 h-16 text-gray-400 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="3" y="11" width="18" height="11" rx="2"></rect>
         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
       </svg>
-      <h3 class="text-lg text-gray-500 mb-2">Cap. ${chapter.number} - ${chapter.title}</h3>
+      <h2 class="text-lg text-gray-500 mb-2">Cap. ${chapter.number} - ${chapter.title}</h2>
       <p class="text-sm text-gray-500">
         Complete todas as aulas do capítulo ${chapter.requiredBy} para desbloquear estes exercícios.
       </p>
@@ -158,7 +168,7 @@ function renderUnlockedChapter(chapter) {
       </div>
     </div>
     <div id="video-container"></div>
-    <div class="h-1 bg-gray-200 rounded overflow-hidden mb-6">
+    <div class="h-1 bg-gray-200 rounded overflow-hidden mb-6" role="progressbar" aria-valuenow="${chapter.pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do capítulo" id="chapter-progressbar">
       <div class="h-full bg-go-blue rounded transition-all duration-300" id="chapter-progress-bar" style="width:${chapter.pct}%"></div>
     </div>
     <div class="flex flex-col gap-1.5 mb-8" id="lessons-list">
@@ -177,17 +187,19 @@ function renderLesson(lesson) {
 
   return `
     <div class="flex items-center gap-3.5 px-4 py-3.5 border rounded transition-all duration-200 cursor-pointer ${borderClass}"
-         data-lesson-id="${lesson.id}">
-      <div class="w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 ${checkClass}"
-           data-toggle="${lesson.id}">
+         data-lesson-id="${lesson.id}"
+         role="checkbox" aria-checked="${lesson.completed}" tabindex="0"
+         aria-label="Aula ${lesson.lessonNumber}: ${lesson.title}"
+         data-toggle="${lesson.id}">
+      <div class="w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 ${checkClass}" aria-hidden="true">
         ${lesson.completed ? ICONS.check : ""}
       </div>
-      <div class="flex-1 min-w-0" data-toggle="${lesson.id}">
+      <div class="flex-1 min-w-0" aria-hidden="true">
         <div class="text-xs text-gray-500">Aula ${lesson.lessonNumber}</div>
         <div class="text-sm font-medium truncate">${lesson.title}</div>
       </div>
       <button class="w-9 h-9 rounded bg-go-primary text-white flex items-center justify-center shrink-0 hover:bg-go-primary/80 transition-colors"
-              data-watch="${lesson.youtubeId}" title="Assistir">
+              data-watch="${lesson.youtubeId}" aria-label="Assistir aula: ${lesson.title}">
         ${ICONS.play}
       </button>
     </div>`;
@@ -197,6 +209,8 @@ function updateLessonUI(lessonId, lesson) {
   const lessonEl = DOM.main.querySelector(`[data-lesson-id="${lessonId}"]`);
   if (!lessonEl) return;
 
+  lessonEl.setAttribute("aria-checked", lesson.completed);
+
   if (lesson.completed) {
     lessonEl.classList.remove("border-gray-200", "bg-white", "hover:border-go-blue");
     lessonEl.classList.add("border-green-600", "bg-green-50");
@@ -205,8 +219,8 @@ function updateLessonUI(lessonId, lesson) {
     lessonEl.classList.add("border-gray-200", "bg-white", "hover:border-go-blue");
   }
 
-  const checkEl = lessonEl.querySelector(`[data-toggle="${lessonId}"]`);
-  if (checkEl) {
+  const checkEl = lessonEl.querySelector("[aria-hidden]");
+  if (checkEl && checkEl.classList.contains("rounded-full")) {
     if (lesson.completed) {
       checkEl.classList.remove("border-gray-300");
       checkEl.classList.add("border-green-600", "bg-green-600", "text-white");
@@ -222,21 +236,27 @@ function updateLessonUI(lessonId, lesson) {
 function updateChapterProgress(chapter) {
   const textEl = document.getElementById("chapter-progress-text");
   const barEl = document.getElementById("chapter-progress-bar");
+  const progressbar = document.getElementById("chapter-progressbar");
   if (textEl) textEl.textContent = `${chapter.done} de ${chapter.total} aulas completas (${chapter.pct}%)`;
   if (barEl) barEl.style.width = chapter.pct + "%";
+  if (progressbar) progressbar.setAttribute("aria-valuenow", chapter.pct);
 }
 
 // Player de vídeo
-function openVideoPlayer(youtubeId) {
+let lastWatchButton = null;
+
+function openVideoPlayer(youtubeId, triggerEl) {
   const container = document.getElementById("video-container");
   if (!container) return;
+
+  lastWatchButton = triggerEl || null;
 
   container.innerHTML = `
     <div class="mb-6">
       <div class="relative bg-black rounded overflow-hidden" style="padding-top:56.25%">
         <iframe class="absolute inset-0 w-full h-full"
           src="https://www.youtube.com/embed/${encodeURIComponent(youtubeId)}"
-          frameborder="0"
+          title="Vídeo da aula"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen></iframe>
       </div>
@@ -244,12 +264,15 @@ function openVideoPlayer(youtubeId) {
               id="close-player">Fechar player</button>
     </div>`;
 
-  document.getElementById("close-player").onclick = () => {
+  const closeBtn = document.getElementById("close-player");
+  closeBtn.focus();
+  closeBtn.onclick = () => {
     container.innerHTML = "";
+    if (lastWatchButton) lastWatchButton.focus();
   };
 }
 
-function handleSidebarClick(e) {
+function handleSidebarActivate(e) {
   const el = e.target.closest("[data-chapter]");
   if (!el) return;
 
@@ -263,36 +286,61 @@ function handleSidebarClick(e) {
   updateSidebarProgress(stats);
   updateSidebarNav();
   renderChapter(ch);
+
+  const activeEl = DOM.nav.querySelector(`[data-chapter="${num}"]`);
+  if (activeEl) activeEl.focus();
+}
+
+function handleSidebarKeydown(e) {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    handleSidebarActivate(e);
+  }
+}
+
+function handleLessonToggle(lessonId) {
+  toggle(lessonId);
+
+  const stats = computeProgress();
+  const chapter = findChapter(currentChapter);
+  const lesson = chapter?.lessons.find((l) => l.id === lessonId);
+
+  if (lesson) updateLessonUI(lessonId, lesson);
+  if (chapter) updateChapterProgress(chapter);
+
+  updateSidebarProgress(stats);
+  updateSidebarNav();
 }
 
 function handleChapterClick(e) {
-  const toggleEl = e.target.closest("[data-toggle]");
-  if (toggleEl) {
-    const lessonId = toggleEl.dataset.toggle;
-    toggle(lessonId);
-
-    const stats = computeProgress();
-    const chapter = findChapter(currentChapter);
-    const lesson = chapter?.lessons.find((l) => l.id === lessonId);
-
-    if (lesson) updateLessonUI(lessonId, lesson);
-    if (chapter) updateChapterProgress(chapter);
-
-    updateSidebarProgress(stats);
-    updateSidebarNav();
-    return;
-  }
-
   const watchEl = e.target.closest("[data-watch]");
   if (watchEl) {
     e.stopPropagation();
-    openVideoPlayer(watchEl.dataset.watch);
+    openVideoPlayer(watchEl.dataset.watch, watchEl);
+    return;
+  }
+
+  const toggleEl = e.target.closest("[data-toggle]");
+  if (toggleEl) {
+    handleLessonToggle(toggleEl.dataset.toggle);
+  }
+}
+
+function handleChapterKeydown(e) {
+  if (e.key !== "Enter" && e.key !== " ") return;
+
+  const toggleEl = e.target.closest("[data-toggle]");
+  if (toggleEl) {
+    e.preventDefault();
+    handleLessonToggle(toggleEl.dataset.toggle);
   }
 }
 
 function initEventListeners() {
-  DOM.nav.addEventListener("click", handleSidebarClick);
+  DOM.nav.addEventListener("click", handleSidebarActivate);
+  DOM.nav.addEventListener("keydown", handleSidebarKeydown);
   DOM.main.addEventListener("click", handleChapterClick);
+  DOM.main.addEventListener("keydown", handleChapterKeydown);
 }
 
 function selectInitialChapter() {

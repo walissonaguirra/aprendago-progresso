@@ -9,7 +9,8 @@ function htmlPlugin() {
       let html = readFileSync("index.html", "utf-8");
       html = html
         .replace('./dist/style.css', './style.css')
-        .replace('./js/app.js', './app.js');
+        .replace('./js/app.js', './app.js')
+        .replace('type="module"', '');
 
       const minified = await minify(html, {
         collapseWhitespace: true,

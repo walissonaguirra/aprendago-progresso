@@ -1,7 +1,5 @@
 # AprendaGo Progresso
 
-Organizador de progresso para o curso **[Aprenda Go](https://youtube.com/@aprendago?si=63CbOJUcwxI5CR42)**, criado e disponibilizado gratuitamente no YouTube pela [Ellen Körbes](https://gotocph.com/2018/speakers/639/ellen-koerbes).
-
 Este projeto é um *wrapper* leve, 100% client-side, que ajuda iniciantes em **Go Lang** (ou devs migrando de outras linguagens) a acompanhar aulas, marcar progresso e destravar exercícios no seu próprio ritmo.
 
 **Acesse a aplicação:** [aprendago.walissonaguirra.dev](https://aprendago.walissonaguirra.dev)

@@ -19,6 +19,11 @@ function htmlPlugin() {
       });
 
       this.emitFile({ type: "asset", fileName: "index.html", source: minified });
+      this.emitFile({
+        type: "asset",
+        fileName: "favicon.svg",
+        source: readFileSync("favicon.svg", "utf-8"),
+      });
     },
   };
 }

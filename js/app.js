@@ -1,5 +1,6 @@
 import { toggle, getCompletions } from "./store.js";
 import { modules } from "./chapters.js";
+import { initWelcome } from "./welcome.js";
 
 // Estado
 let currentChapter = parseInt(localStorage.getItem("aprendago_chapter")) || 0;
@@ -376,3 +377,8 @@ computeProgress();
 selectInitialChapter();
 render();
 initEventListeners();
+initWelcome();
+
+document.getElementById("welcome-trigger")?.addEventListener("click", () => {
+  initWelcome({ force: true });
+});

@@ -368,11 +368,6 @@ function render() {
   if (chapter) renderChapter(chapter);
 }
 
-// Inicialização
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js").catch(() => { });
-}
-
 computeProgress();
 selectInitialChapter();
 render();

@@ -2,7 +2,7 @@
 
 Este projeto é um *wrapper* leve, 100% client-side, que ajuda iniciantes em **Go Lang** (ou devs migrando de outras linguagens) a acompanhar aulas, marcar progresso e destravar exercícios no seu próprio ritmo.
 
-**Acesse a aplicação:** [aprendago.walissonaguirra.dev](https://aprendago.walissonaguirra.dev)
+**Acesse a aplicação:** [https://walissonaguirra.github.io/aprendago-progresso/](https://walissonaguirra.github.io/aprendago-progresso/)
 
 ## Contribuindo
 

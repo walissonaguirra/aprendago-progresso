@@ -1,6 +1,21 @@
 # Changelog
 
 Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
+## [0.1.1] - 14-04-2026
+
+### Correções
+
+- Remove service worker não altilizado ([540a145](https://codeberg.org/walissonaguirra/highkey/commit/540a145411d1fc90fcd577a6aac2161647fed93f))
+
+### Documentação
+
+- Remove texto desnecessario do README ([9665566](https://codeberg.org/walissonaguirra/highkey/commit/966556670beed0add0c39a63eb7a384f8eaf0587))
+- *(readme)* Atualizalink para acesso aplicação no github pages ([819b21e](https://codeberg.org/walissonaguirra/highkey/commit/819b21e3be0ebf6cfc306abd0aea37bcff40bd1c))
+
+### Diversos
+
+- Add ci para deploy no github pages ([3f812e2](https://codeberg.org/walissonaguirra/highkey/commit/3f812e20663a2f1d503b6fb3e59e9f4fdb6b7c85))
+- Atualiza versão do node no github action: v20 - v22.19.0 ([33b87d7](https://codeberg.org/walissonaguirra/highkey/commit/33b87d734b3d8a081053cc53c8c24f11f0d07ce5))
 ## [0.1.0] - 10-04-2026
 
 ### Funcionalidades
@@ -24,3 +39,4 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 - Add readme e guia de contribuicao ([80a6234](https://codeberg.org/walissonaguirra/highkey/commit/80a62340685be036f5a56d2075fb359e65f2f110))
 - Add LICESE - Creative Commons BY-NC-SA 4.0 ([f552c82](https://codeberg.org/walissonaguirra/highkey/commit/f552c82d7f4c5c6d7e8d28b01fd63aa653327e40))
+- Add changelog v0.1.0 ([c05ec1b](https://codeberg.org/walissonaguirra/highkey/commit/c05ec1b73e509aef3a8a4fc042699ee4e0380a68))
